@@ -1,73 +1,124 @@
-import { useEffect } from 'react';
-import { useControls, folder } from 'leva';
+import { useEffect, useState } from 'react';
+import * as THREE from 'three';
 import { useSimulationStore } from '../../store/useSimulationStore';
-import { coulombDefaultBodies } from './coulombDefaults';
+import { PresetSelector, usePresetLoader } from '../../components/ui/PresetSelector';
+import { ParameterSlider } from '../../components/ui/ParameterSlider';
+import { coulombPresets } from './coulombPresets';
+
+function chargeColor(q: number): string {
+  return q >= 0 ? '#ff4444' : '#4444ff';
+}
 
 export function CoulombControls() {
-  const setBodies = useSimulationStore((s) => s.setBodies);
-  const setInitialBodies = useSimulationStore((s) => s.setInitialBodies);
+  const { activePresetId, loadPreset } = usePresetLoader(coulombPresets, coulombPresets[0].id);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [timeScale, setTimeScale] = useState(1);
 
+  // Advanced params
+  const [charge1, setCharge1] = useState(8);
+  const [charge2, setCharge2] = useState(-8);
+  const [mass1, setMass1] = useState(5);
+  const [mass2, setMass2] = useState(5);
+  const [sep, setSep] = useState(8);
+
+  // Load first preset on mount
   useEffect(() => {
-    const bodies = coulombDefaultBodies();
-    setInitialBodies(bodies);
-    setBodies(coulombDefaultBodies());
+    loadPreset(coulombPresets[0].id);
   }, []);
 
-  const values = useControls({
-    'Particle 1': folder({
-      'Charge 1': { value: 8, min: -20, max: 20, step: 0.1 },
-      'Mass 1': { value: 5, min: 0.1, max: 50, step: 0.1 },
-    }),
-    'Particle 2': folder({
-      'Charge 2': { value: -8, min: -20, max: 20, step: 0.1 },
-      'Mass 2': { value: 5, min: 0.1, max: 50, step: 0.1 },
-    }),
-    'Time Scale': { value: 1, min: 0.1, max: 5, step: 0.1 },
-  });
-
+  // Time scale
   useEffect(() => {
-    const bodies = coulombDefaultBodies();
-    bodies[0].charge = values['Charge 1'];
-    bodies[0].mass = values['Mass 1'];
-    bodies[0].color = values['Charge 1'] >= 0 ? '#ff4444' : '#4444ff';
-    bodies[0].radius = 0.5;
-    bodies[1].charge = values['Charge 2'];
-    bodies[1].mass = values['Mass 2'];
-    bodies[1].color = values['Charge 2'] >= 0 ? '#ff4444' : '#4444ff';
-    bodies[1].radius = 0.5;
+    useSimulationStore.getState().setTimeScale(timeScale);
+  }, [timeScale]);
 
-    // Recompute orbital speed for new parameters
-    const sep = 8;
-    const q1 = Math.abs(values['Charge 1']);
-    const q2 = Math.abs(values['Charge 2']);
-    const sameSign = values['Charge 1'] * values['Charge 2'] > 0;
-
-    if (!sameSign && q1 > 0 && q2 > 0) {
-      const speed = Math.sqrt((q1 * q2) / (values['Mass 1'] * 2 * (sep / 2)));
-      bodies[0].velocity.set(0, 0, speed);
-      bodies[1].velocity.set(0, 0, -speed);
+  const applyCustom = () => {
+    // Compute orbital velocity for opposite charges, or give a small kick for like charges
+    const attractive = charge1 * charge2 < 0;
+    let v1z: number, v2z: number;
+    if (attractive && Math.abs(charge1) > 0 && Math.abs(charge2) > 0) {
+      const speed = Math.sqrt(Math.abs(charge1 * charge2) / (mass1 * 2 * (sep / 2)));
+      v1z = speed;
+      v2z = -speed;
     } else {
-      bodies[0].velocity.set(0, 0, 0.5);
-      bodies[1].velocity.set(0, 0, -0.5);
+      v1z = 0.5;
+      v2z = -0.5;
     }
 
-    setInitialBodies(bodies);
-    useSimulationStore.getState().engine.reset();
-    const freshBodies = coulombDefaultBodies();
-    freshBodies.forEach((b, i) => {
-      b.charge = bodies[i].charge;
-      b.mass = bodies[i].mass;
-      b.color = bodies[i].color;
-      b.radius = bodies[i].radius;
-      b.velocity.copy(bodies[i].velocity);
-    });
-    setBodies(freshBodies);
-    useSimulationStore.setState({ time: 0 });
-  }, [values['Charge 1'], values['Charge 2'], values['Mass 1'], values['Mass 2']]);
+    const bodies = [
+      {
+        id: 'charge-1',
+        position: new THREE.Vector3(-sep / 2, 0, 0),
+        velocity: new THREE.Vector3(0, 0, v1z),
+        acceleration: new THREE.Vector3(),
+        mass: mass1, charge: charge1,
+        color: chargeColor(charge1), radius: 0.5,
+      },
+      {
+        id: 'charge-2',
+        position: new THREE.Vector3(sep / 2, 0, 0),
+        velocity: new THREE.Vector3(0, 0, v2z),
+        acceleration: new THREE.Vector3(),
+        mass: mass2, charge: charge2,
+        color: chargeColor(charge2), radius: 0.5,
+      },
+    ];
+    const store = useSimulationStore.getState();
+    store.setInitialBodies(bodies);
+    store.engine.reset();
+    const activeBodies = bodies.map(b => ({
+      ...b,
+      position: b.position.clone(),
+      velocity: b.velocity.clone(),
+      acceleration: b.acceleration.clone(),
+    }));
+    store.setBodies(activeBodies);
+    useSimulationStore.setState({ time: 0, isPlaying: false });
+  };
 
-  useEffect(() => {
-    useSimulationStore.getState().setTimeScale(values['Time Scale']);
-  }, [values['Time Scale']]);
+  return (
+    <div className="viz-controls">
+      <PresetSelector
+        presets={coulombPresets}
+        activePresetId={activePresetId}
+        onSelect={loadPreset}
+      />
 
-  return null;
+      <div className="param-section">
+        <ParameterSlider
+          label="Time Scale"
+          value={timeScale}
+          min={0.1} max={5} step={0.1}
+          onChange={setTimeScale}
+        />
+      </div>
+
+      <div className="advanced-section">
+        <button
+          className="advanced-toggle"
+          onClick={() => setShowAdvanced(!showAdvanced)}
+        >
+          {showAdvanced ? '▾' : '▸'} Custom Parameters
+        </button>
+
+        {showAdvanced && (
+          <div className="advanced-params">
+            <div className="param-group-label">Particle 1</div>
+            <ParameterSlider label="Charge" value={charge1} min={-20} max={20} step={0.1} onChange={setCharge1} />
+            <ParameterSlider label="Mass" value={mass1} min={0.1} max={50} step={0.1} onChange={setMass1} />
+
+            <div className="param-group-label">Particle 2</div>
+            <ParameterSlider label="Charge" value={charge2} min={-20} max={20} step={0.1} onChange={setCharge2} />
+            <ParameterSlider label="Mass" value={mass2} min={0.1} max={50} step={0.1} onChange={setMass2} />
+
+            <div className="param-group-label">Setup</div>
+            <ParameterSlider label="Separation" value={sep} min={2} max={20} step={0.5} onChange={setSep} />
+
+            <button className="apply-btn" onClick={applyCustom}>
+              Apply & Reset
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

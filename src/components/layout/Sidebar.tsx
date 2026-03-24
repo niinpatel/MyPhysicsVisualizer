@@ -28,7 +28,7 @@ export function Sidebar() {
         <p className="viz-description">{config.description}</p>
       </div>
 
-      <div className="sidebar-section controls-host">
+      <div className="controls-host">
         <ControlsComponent />
       </div>
 
@@ -57,7 +57,7 @@ export function Sidebar() {
       </div>
 
       <div className="sidebar-footer">
-        <span className="shortcut-hint">Space = Play/Pause</span>
+        <span className="shortcut-hint">Space = Play/Pause | R = Reset</span>
       </div>
     </div>
   );

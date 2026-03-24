@@ -21,8 +21,8 @@ html, body, #root {
 
 /* Sidebar */
 .sidebar {
-  width: 300px;
-  min-width: 300px;
+  width: 320px;
+  min-width: 320px;
   background: #111128;
   border-right: 1px solid #2a2a4a;
   display: flex;
@@ -57,6 +57,7 @@ html, body, #root {
 .controls-host {
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
 }
 
 /* Visualizer Selector */
@@ -194,4 +195,203 @@ html, body, #root {
 
 .energy-total .energy-value {
   color: #66ddaa;
+}
+
+/* Preset Selector */
+.preset-selector {
+  margin-bottom: 8px;
+}
+
+.preset-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6666aa;
+  margin-bottom: 8px;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.preset-card {
+  padding: 8px 10px;
+  border: 1px solid #2a2a4a;
+  border-radius: 6px;
+  background: #151530;
+  color: #aaaacc;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  line-height: 1.3;
+}
+
+.preset-card:hover {
+  background: #1e1e45;
+  border-color: #4455aa;
+  color: #ddddff;
+}
+
+.preset-card.active {
+  background: #252560;
+  border-color: #5566cc;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(85, 102, 204, 0.3);
+}
+
+.preset-description {
+  font-size: 11px;
+  color: #7777aa;
+  line-height: 1.4;
+  margin-top: 8px;
+  min-height: 30px;
+}
+
+/* Viz Controls */
+.viz-controls {
+  padding: 12px 20px;
+}
+
+.param-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #1a1a3a;
+}
+
+/* Parameter Sliders */
+.param-slider {
+  margin-bottom: 10px;
+}
+
+.param-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.param-slider-label {
+  font-size: 12px;
+  color: #9999bb;
+}
+
+.param-slider-input {
+  width: 60px;
+  padding: 2px 6px;
+  border: 1px solid #2a2a4a;
+  border-radius: 4px;
+  background: #0d0d20;
+  color: #ccccee;
+  font-size: 11px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  text-align: right;
+}
+
+.param-slider-input:focus {
+  outline: none;
+  border-color: #5566cc;
+}
+
+.param-slider-range {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #1a1a3a;
+  border-radius: 2px;
+  outline: none;
+}
+
+.param-slider-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #5566cc;
+  cursor: pointer;
+  border: 2px solid #7788dd;
+  transition: transform 0.1s;
+}
+
+.param-slider-range::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.param-slider-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #5566cc;
+  cursor: pointer;
+  border: 2px solid #7788dd;
+}
+
+/* Advanced Section */
+.advanced-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #1a1a3a;
+}
+
+.advanced-toggle {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  background: none;
+  color: #7777aa;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s;
+}
+
+.advanced-toggle:hover {
+  color: #aaaacc;
+}
+
+.advanced-params {
+  padding-top: 8px;
+}
+
+.param-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #5566aa;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #1a1a3a;
+}
+
+.param-group-label:first-child {
+  margin-top: 0;
+}
+
+.apply-btn {
+  width: 100%;
+  padding: 10px 16px;
+  margin-top: 16px;
+  border: 1px solid #3a5a3a;
+  border-radius: 6px;
+  background: #1a3a1a;
+  color: #88cc88;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.apply-btn:hover {
+  background: #2a4a2a;
+  border-color: #55aa55;
+  color: #aaffaa;
 }

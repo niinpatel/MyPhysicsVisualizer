@@ -4,9 +4,11 @@ import { coulombForce, coulombPotentialEnergy } from '../engine/forces/coulomb';
 import { GravityVisualizer } from './gravity/GravityVisualizer';
 import { GravityControls } from './gravity/GravityControls';
 import { gravityDefaultBodies } from './gravity/gravityDefaults';
+import { gravityPresets } from './gravity/gravityPresets';
 import { CoulombVisualizer } from './coulomb/CoulombVisualizer';
 import { CoulombControls } from './coulomb/CoulombControls';
 import { coulombDefaultBodies } from './coulomb/coulombDefaults';
+import { coulombPresets } from './coulomb/coulombPresets';
 
 export const visualizerRegistry: VisualizerConfig[] = [
   {
@@ -15,6 +17,7 @@ export const visualizerRegistry: VisualizerConfig[] = [
     description: 'Two masses interacting via gravitational attraction (F = Gm₁m₂/r²)',
     forceFunction: gravitationalForce,
     defaultBodies: gravityDefaultBodies,
+    presets: gravityPresets,
     SceneComponent: GravityVisualizer,
     ControlsComponent: GravityControls,
     computePotentialEnergy: gravitationalPotentialEnergy,
@@ -26,6 +29,7 @@ export const visualizerRegistry: VisualizerConfig[] = [
     description: 'Two charged particles interacting via electrostatic force (F = kq₁q₂/r²)',
     forceFunction: coulombForce,
     defaultBodies: coulombDefaultBodies,
+    presets: coulombPresets,
     SceneComponent: CoulombVisualizer,
     ControlsComponent: CoulombControls,
     computePotentialEnergy: coulombPotentialEnergy,

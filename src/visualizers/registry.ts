@@ -9,6 +9,11 @@ import { CoulombVisualizer } from './coulomb/CoulombVisualizer';
 import { CoulombControls } from './coulomb/CoulombControls';
 import { coulombDefaultBodies } from './coulomb/coulombDefaults';
 import { coulombPresets } from './coulomb/coulombPresets';
+import { lorentzForce, lorentzPotentialEnergy } from '../engine/forces/lorentz';
+import { LorentzVisualizer } from './lorentz/LorentzVisualizer';
+import { LorentzControls } from './lorentz/LorentzControls';
+import { lorentzDefaultBodies } from './lorentz/lorentzDefaults';
+import { lorentzPresets } from './lorentz/lorentzPresets';
 
 export const visualizerRegistry: VisualizerConfig[] = [
   {
@@ -33,6 +38,18 @@ export const visualizerRegistry: VisualizerConfig[] = [
     SceneComponent: CoulombVisualizer,
     ControlsComponent: CoulombControls,
     computePotentialEnergy: coulombPotentialEnergy,
+    softening: 0.3,
+  },
+  {
+    id: 'lorentz',
+    name: 'Lorentz Force',
+    description: 'Charged particles with electric & magnetic forces (F = q(E + v×B))',
+    forceFunction: lorentzForce,
+    defaultBodies: lorentzDefaultBodies,
+    presets: lorentzPresets,
+    SceneComponent: LorentzVisualizer,
+    ControlsComponent: LorentzControls,
+    computePotentialEnergy: lorentzPotentialEnergy,
     softening: 0.3,
   },
 ];

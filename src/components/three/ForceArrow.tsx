@@ -21,17 +21,25 @@ export function ForceArrow({ bodyId, forceIndex, forces, color = '#ffff00', scal
     if (!body || !arrowRef.current || !forces.current[forceIndex]) return;
 
     const force = forces.current[forceIndex];
-    const length = force.length() * scale;
+    const forceMag = force.length();
 
-    if (length > 0.001) {
-      _dir.copy(force).normalize();
-      arrowRef.current.position.copy(body.position);
-      arrowRef.current.setDirection(_dir);
-      arrowRef.current.setLength(length, length * 0.2, length * 0.1);
-      arrowRef.current.visible = true;
-    } else {
+    if (forceMag < 1e-6) {
       arrowRef.current.visible = false;
+      return;
     }
+
+    _dir.copy(force).normalize();
+
+    // Logarithmic scaling keeps arrows visible across the huge dynamic range
+    // of inverse-square forces (linear scaling makes them invisible at moderate distances)
+    const rawLength = Math.log10(1 + forceMag * 50) * scale * 2;
+    const length = THREE.MathUtils.clamp(rawLength, 0.25, 4);
+
+    // Offset arrow origin to the body's surface so it isn't hidden inside large spheres
+    arrowRef.current.position.copy(body.position).addScaledVector(_dir, body.radius);
+    arrowRef.current.setDirection(_dir);
+    arrowRef.current.setLength(length, Math.max(length * 0.2, 0.06), Math.max(length * 0.1, 0.03));
+    arrowRef.current.visible = true;
   });
 
   return (

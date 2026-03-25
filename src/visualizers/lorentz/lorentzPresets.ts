@@ -7,54 +7,6 @@ function chargeColor(q: number): string {
 
 export const lorentzPresets: Preset[] = [
   {
-    id: 'parallel-currents',
-    name: 'Parallel Currents',
-    description: 'Same-sign charges moving together — magnetic attraction fights electric repulsion',
-    bodies: () => {
-      const q = 10, m = 5, sep = 6;
-      return [
-        {
-          id: 'charge-1', mass: m, charge: q,
-          position: new THREE.Vector3(-sep / 2, 0, 0),
-          velocity: new THREE.Vector3(0, 0, 3),
-          acceleration: new THREE.Vector3(),
-          color: chargeColor(q), radius: 0.5,
-        },
-        {
-          id: 'charge-2', mass: m, charge: q,
-          position: new THREE.Vector3(sep / 2, 0, 0),
-          velocity: new THREE.Vector3(0, 0, 3),
-          acceleration: new THREE.Vector3(),
-          color: chargeColor(q), radius: 0.5,
-        },
-      ];
-    },
-  },
-  {
-    id: 'anti-parallel-currents',
-    name: 'Anti-Parallel Currents',
-    description: 'Same-sign charges moving in opposite directions — both forces repulsive',
-    bodies: () => {
-      const q = 10, m = 5, sep = 6;
-      return [
-        {
-          id: 'charge-1', mass: m, charge: q,
-          position: new THREE.Vector3(-sep / 2, 0, 0),
-          velocity: new THREE.Vector3(0, 0, 3),
-          acceleration: new THREE.Vector3(),
-          color: chargeColor(q), radius: 0.5,
-        },
-        {
-          id: 'charge-2', mass: m, charge: q,
-          position: new THREE.Vector3(sep / 2, 0, 0),
-          velocity: new THREE.Vector3(0, 0, -3),
-          acceleration: new THREE.Vector3(),
-          color: chargeColor(q), radius: 0.5,
-        },
-      ];
-    },
-  },
-  {
     id: 'magnetic-orbit',
     name: 'Magnetic Orbit Correction',
     description: 'Opposite charges orbiting — magnetic force causes orbital precession',

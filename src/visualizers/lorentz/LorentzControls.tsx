@@ -17,11 +17,11 @@ export function LorentzControls() {
   const [magneticStrength, setMagneticStrength] = useState(getMagneticConstant());
 
   // Advanced params
-  const [charge1, setCharge1] = useState(10);
-  const [charge2, setCharge2] = useState(10);
+  const [charge1, setCharge1] = useState(8);
+  const [charge2, setCharge2] = useState(-8);
   const [mass1, setMass1] = useState(5);
   const [mass2, setMass2] = useState(5);
-  const [sep, setSep] = useState(6);
+  const [sep, setSep] = useState(8);
 
   // Load first preset on mount
   useEffect(() => {

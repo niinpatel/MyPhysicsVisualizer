@@ -1,4 +1,7 @@
 import { Grid } from '@react-three/drei';
+import * as THREE from 'three';
+
+const side = THREE.DoubleSide;
 
 export function GridFloor() {
   return (
@@ -15,6 +18,9 @@ export function GridFloor() {
       fadeStrength={1}
       followCamera={false}
       infiniteGrid
+      side={side}
+      renderOrder={-1}
+      material-depthWrite={false}
     />
   );
 }

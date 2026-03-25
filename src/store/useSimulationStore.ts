@@ -9,6 +9,7 @@ interface SimulationStore {
   isPlaying: boolean;
   time: number;
   timeScale: number;
+  trailResetKey: number;
   engine: SimulationEngine;
 
   setBodies: (bodies: Body[]) => void;
@@ -27,6 +28,7 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
   isPlaying: false,
   time: 0,
   timeScale: 1,
+  trailResetKey: 0,
   engine: new SimulationEngine(),
 
   setBodies: (bodies) => set({ bodies }),
@@ -47,7 +49,7 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
     for (const b of freshBodies) {
       b.acceleration.set(0, 0, 0);
     }
-    set({ bodies: freshBodies, time: 0, isPlaying: false });
+    set((s) => ({ bodies: freshBodies, time: 0, isPlaying: false, trailResetKey: s.trailResetKey + 1 }));
   },
 
   updateBodyParam: (id, updates) => {

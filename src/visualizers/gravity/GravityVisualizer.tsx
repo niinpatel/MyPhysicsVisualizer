@@ -27,6 +27,7 @@ export function GravityVisualizer() {
 
   const showTrails = useUIStore((s) => s.showTrails);
   const showForceArrows = useUIStore((s) => s.showForceArrows);
+  const trailResetKey = useSimulationStore((s) => s.trailResetKey);
 
   return (
     <>
@@ -34,8 +35,8 @@ export function GravityVisualizer() {
       <Body3D bodyId="body-2" />
       {showTrails && (
         <>
-          <TrailLine bodyId="body-1" color="#ff6644" />
-          <TrailLine bodyId="body-2" color="#44aaff" />
+          <TrailLine key={`body-1-${trailResetKey}`} bodyId="body-1" color="#ff6644" />
+          <TrailLine key={`body-2-${trailResetKey}`} bodyId="body-2" color="#44aaff" />
         </>
       )}
       {showForceArrows && (

@@ -26,6 +26,7 @@ export function CoulombVisualizer() {
 
   const showTrails = useUIStore((s) => s.showTrails);
   const showForceArrows = useUIStore((s) => s.showForceArrows);
+  const trailResetKey = useSimulationStore((s) => s.trailResetKey);
 
   return (
     <>
@@ -33,8 +34,8 @@ export function CoulombVisualizer() {
       <Body3D bodyId="charge-2" />
       {showTrails && (
         <>
-          <TrailLine bodyId="charge-1" color="#ff4444" />
-          <TrailLine bodyId="charge-2" color="#4444ff" />
+          <TrailLine key={`charge-1-${trailResetKey}`} bodyId="charge-1" color="#ff4444" />
+          <TrailLine key={`charge-2-${trailResetKey}`} bodyId="charge-2" color="#4444ff" />
         </>
       )}
       {showForceArrows && (

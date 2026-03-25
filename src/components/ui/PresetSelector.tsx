@@ -47,7 +47,7 @@ export function usePresetLoader(presets: Preset[], defaultPresetId: string) {
     store.setInitialBodies(bodies);
     store.engine.reset();
     store.setBodies(preset.bodies());
-    useSimulationStore.setState({ time: 0, isPlaying: false });
+    useSimulationStore.setState((s) => ({ time: 0, isPlaying: false, trailResetKey: s.trailResetKey + 1 }));
   };
 
   return { activePresetId, loadPreset };

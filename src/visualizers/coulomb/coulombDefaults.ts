@@ -4,14 +4,14 @@ import type { Body } from '../../types/simulation';
 /**
  * Two opposite charges in orbit.
  * Coulomb attraction: F = k*|q1|*|q2|/r² (same as gravity form with charges instead of masses)
- * For circular orbit: v = sqrt(k*|q1*q2| / (m * 2 * r)) for equal mass particles
+ * For circular orbit: v = sqrt(k*|q1*q2| / (2 * m * d)) for equal mass particles at separation d
  */
 export function coulombDefaultBodies(): Body[] {
   const separation = 8;
   const charge = 8;
   const mass = 5;
-  // v = sqrt(k * q^2 / (m * 2 * r_half)) for circular orbit
-  const orbitalSpeed = Math.sqrt((charge * charge) / (mass * 2 * (separation / 2)));
+  // v = sqrt(k * q^2 / (2 * m * d)) for circular orbit
+  const orbitalSpeed = Math.sqrt((charge * charge) / (mass * 2 * separation));
 
   return [
     {

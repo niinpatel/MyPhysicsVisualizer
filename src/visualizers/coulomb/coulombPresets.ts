@@ -12,7 +12,7 @@ export const coulombPresets: Preset[] = [
     description: 'Classic attraction — opposite charges in a stable orbit',
     bodies: () => {
       const q = 8, m = 5, sep = 8;
-      const v = Math.sqrt((q * q) / (m * 2 * (sep / 2)));
+      const v = Math.sqrt((q * q) / (m * 2 * sep));
       return [
         {
           id: 'charge-1', mass: m, charge: q,
@@ -112,7 +112,7 @@ export const coulombPresets: Preset[] = [
     description: 'Asymmetric charges create a complex orbital dance',
     bodies: () => {
       const q1 = 12, q2 = -6, m = 5, sep = 8;
-      const v = Math.sqrt(Math.abs(q1 * q2) / (m * 2 * (sep / 2)));
+      const v = Math.sqrt(Math.abs(q1 * q2) / (m * 2 * sep));
       return [
         {
           id: 'charge-1', mass: m, charge: q1,

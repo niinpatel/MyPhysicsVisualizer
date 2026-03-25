@@ -36,7 +36,7 @@ export function CoulombControls() {
     const attractive = charge1 * charge2 < 0;
     let v1z: number, v2z: number;
     if (attractive && Math.abs(charge1) > 0 && Math.abs(charge2) > 0) {
-      const speed = Math.sqrt(Math.abs(charge1 * charge2) / (mass1 * 2 * (sep / 2)));
+      const speed = Math.sqrt(Math.abs(charge1 * charge2) / (mass1 * 2 * sep));
       v1z = speed;
       v2z = -speed;
     } else {

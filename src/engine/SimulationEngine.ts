@@ -19,16 +19,18 @@ export class SimulationEngine {
     timeScale: number,
     softening: number,
   ): number {
-    const dt = Math.min(frameDelta, MAX_FRAME_DT) * timeScale;
+    const dt = Math.min(frameDelta, MAX_FRAME_DT);
     this.accumulator += dt;
+
+    const scaledDt = FIXED_DT * timeScale;
 
     let steps = 0;
     while (this.accumulator >= FIXED_DT && steps < MAX_STEPS_PER_FRAME) {
-      velocityVerletStep(bodies, forceFunction, FIXED_DT, softening);
+      velocityVerletStep(bodies, forceFunction, scaledDt, softening);
       this.accumulator -= FIXED_DT;
       steps++;
     }
 
-    return steps * FIXED_DT;
+    return steps * scaledDt;
   }
 }

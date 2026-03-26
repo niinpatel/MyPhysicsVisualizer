@@ -15,9 +15,9 @@ No test framework is configured.
 
 ## Architecture
 
-**Stack:** React 19, TypeScript (strict), Three.js via @react-three/fiber, Zustand for state, Vite for bundling.
+**Stack:** React 19, TypeScript (strict), Three.js via @react-three/fiber + @react-three/drei, Zustand for state, Leva for UI controls, Vite for bundling.
 
-**Physics Visualizer** — an interactive app for simulating and rendering 2-body physics (gravity, Coulomb's law) in 3D.
+**Physics Visualizer** — an interactive app for simulating and rendering physics interactions (gravity, Coulomb, Lorentz force, Ampère/Biot-Savart currents) in 3D. Keyboard shortcuts: Space = play/pause, R = reset.
 
 ### Key Layers
 
@@ -25,7 +25,7 @@ No test framework is configured.
 
 - **`src/store/`** — Two Zustand stores: `useSimulationStore` (bodies, time, playback, engine instance) and `useUIStore` (active visualizer, display toggles).
 
-- **`src/visualizers/`** — Pluggable visualizer registry. Each visualizer (`gravity/`, `coulomb/`) exports a `VisualizerConfig` with its force function, default bodies, presets, scene component, controls component, and potential energy calculator. New physics simulations are added by creating a new config and registering it.
+- **`src/visualizers/`** — Pluggable visualizer registry. Four visualizers: `gravity/`, `coulomb/`, `lorentz/`, `currents/`. Each exports a `VisualizerConfig` with its force function, default bodies, presets, scene component, controls component, and potential energy calculator. Each visualizer folder follows the convention: `*Visualizer.tsx` (scene), `*Controls.tsx` (Leva-based UI), `*Defaults.ts` (body factory), `*Presets.ts` (named initial conditions).
 
 - **`src/components/three/`** — Reusable 3D components (`Body3D`, `TrailLine`, `ForceArrow`, `GridFloor`, etc.) rendered inside a React-Three-Fiber `Canvas`.
 
@@ -37,4 +37,10 @@ No test framework is configured.
 
 ### Visualizer Registry Pattern
 
-To add a new visualizer: create a folder under `src/visualizers/`, implement `VisualizerConfig` (force function, scene component, controls component, presets), and register it in `src/visualizers/registry.ts`. The UI (sidebar selector, viewport scene) adapts automatically.
+To add a new visualizer: create a folder under `src/visualizers/`, implement `VisualizerConfig` (defined in `src/types/visualizer.ts` — includes `id`, `name`, `forceFunction`, `defaultBodies`, `presets`, `SceneComponent`, `ControlsComponent`, `computePotentialEnergy`, `softening`), and register it in `src/visualizers/registry.ts`. The UI (sidebar selector, viewport scene) adapts automatically.
+
+### Important Implementation Details
+
+- Three.js `Vector3` objects are mutated in-place during physics steps for performance — avoid creating new vectors in hot paths.
+- Force functions are pure: `(bodies, softening) => forces[]`. They also compute potential energy via a separate export.
+- TypeScript strict mode is enforced with `noUnusedLocals` and `noUnusedParameters`.

@@ -159,6 +159,7 @@ export function CurrentsControls() {
         />
         <ParameterSlider
           label="μ₀ Scale"
+          tooltip="Multiplier for vacuum permeability constant"
           value={permeability}
           min={0} max={5} step={0.1}
           onChange={setPermeability}

@@ -7,6 +7,7 @@ export function PlayPauseButton() {
   return (
     <button className="control-btn" onClick={toggle}>
       {isPlaying ? '⏸ Pause' : '▶ Play'}
+      <kbd className="shortcut-badge">Space</kbd>
     </button>
   );
 }

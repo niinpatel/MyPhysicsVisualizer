@@ -14,7 +14,8 @@ export function VisualizerSelector() {
           onClick={() => setActive(v.id)}
           title={v.description}
         >
-          {v.name}
+          <span className="viz-btn-name">{v.name}</span>
+          <span className="viz-btn-equation">{v.description.match(/\(([^)]+)\)/)?.[1] ?? ''}</span>
         </button>
       ))}
     </div>

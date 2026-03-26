@@ -11,6 +11,8 @@ interface UIStore {
   setShowAmpereArrows: (show: boolean) => void;
   showBiotSavartArrows: boolean;
   setShowBiotSavartArrows: (show: boolean) => void;
+  hasInteracted: boolean;
+  setHasInteracted: () => void;
 }
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -24,4 +26,6 @@ export const useUIStore = create<UIStore>((set) => ({
   setShowAmpereArrows: (showAmpereArrows) => set({ showAmpereArrows }),
   showBiotSavartArrows: true,
   setShowBiotSavartArrows: (showBiotSavartArrows) => set({ showBiotSavartArrows }),
+  hasInteracted: false,
+  setHasInteracted: () => set({ hasInteracted: true }),
 }));

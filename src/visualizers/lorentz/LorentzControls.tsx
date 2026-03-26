@@ -92,6 +92,7 @@ export function LorentzControls() {
       <div className="param-section">
         <ParameterSlider
           label="Time Scale"
+          tooltip="Speed multiplier for the simulation"
           value={timeScale}
           min={0.1} max={5} step={0.1}
           onChange={setTimeScale}

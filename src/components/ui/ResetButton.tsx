@@ -6,6 +6,7 @@ export function ResetButton() {
   return (
     <button className="control-btn" onClick={reset}>
       ↺ Reset
+      <kbd className="shortcut-badge">R</kbd>
     </button>
   );
 }

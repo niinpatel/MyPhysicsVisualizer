@@ -75,6 +75,7 @@ export function GravityControls() {
       <div className="param-section">
         <ParameterSlider
           label="Time Scale"
+          tooltip="Speed multiplier for the simulation"
           value={timeScale}
           min={0.1} max={5} step={0.1}
           onChange={setTimeScale}
@@ -102,7 +103,7 @@ export function GravityControls() {
             <ParameterSlider label="Vel Z" value={velZ2} min={-5} max={5} step={0.01} onChange={setVelZ2} />
 
             <div className="param-group-label">Setup</div>
-            <ParameterSlider label="Separation" value={sep} min={2} max={30} step={0.5} onChange={setSep} />
+            <ParameterSlider label="Separation" tooltip="Initial distance between bodies" value={sep} min={2} max={30} step={0.5} onChange={setSep} />
 
             <button className="apply-btn" onClick={applyCustom}>
               Apply & Reset

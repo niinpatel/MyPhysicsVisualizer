@@ -5,13 +5,17 @@ interface ParameterSliderProps {
   max: number;
   step: number;
   onChange: (value: number) => void;
+  tooltip?: string;
 }
 
-export function ParameterSlider({ label, value, min, max, step, onChange }: ParameterSliderProps) {
+export function ParameterSlider({ label, value, min, max, step, onChange, tooltip }: ParameterSliderProps) {
   return (
     <div className="param-slider">
       <div className="param-slider-header">
-        <span className="param-slider-label">{label}</span>
+        <span className="param-slider-label">
+          {label}
+          {tooltip && <span className="param-hint" data-tip={tooltip}>?</span>}
+        </span>
         <input
           type="number"
           className="param-slider-input"

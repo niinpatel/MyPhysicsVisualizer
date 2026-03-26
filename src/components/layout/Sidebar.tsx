@@ -20,19 +20,17 @@ export function Sidebar() {
     <div className="sidebar">
       <div className="sidebar-header">
         <h1>Physics Visualizer</h1>
+        <p className="sidebar-tagline">Explore fundamental forces in an interactive 3D sandbox</p>
       </div>
 
       <VisualizerSelector />
-
-      <div className="sidebar-section">
-        <p className="viz-description">{config.description}</p>
-      </div>
 
       <div className="controls-host">
         <ControlsComponent />
       </div>
 
       <div className="sidebar-section">
+        <div className="section-label">Display</div>
         <label className="toggle-label">
           <input
             type="checkbox"
@@ -52,12 +50,15 @@ export function Sidebar() {
       </div>
 
       <div className="sidebar-section transport-controls">
-        <PlayPauseButton />
-        <ResetButton />
+        <div className="section-label">Playback</div>
+        <div className="transport-buttons">
+          <PlayPauseButton />
+          <ResetButton />
+        </div>
       </div>
 
       <div className="sidebar-footer">
-        <span className="shortcut-hint">Space = Play/Pause | R = Reset</span>
+        <span className="shortcut-hint">Drag to orbit · Scroll to zoom</span>
       </div>
     </div>
   );

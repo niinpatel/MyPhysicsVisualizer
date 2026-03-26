@@ -29,19 +29,19 @@ export function EnergyDisplay({ potentialEnergyFn }: EnergyDisplayProps) {
   return (
     <div className="energy-display">
       <div className="energy-row">
-        <span className="energy-label">KE</span>
+        <span className="energy-label" data-tip="Kinetic Energy — energy of motion">KE</span>
         <span className="energy-value">{quantities.kineticEnergy.toFixed(3)}</span>
       </div>
       <div className="energy-row">
-        <span className="energy-label">PE</span>
+        <span className="energy-label" data-tip="Potential Energy — stored energy from position">PE</span>
         <span className="energy-value">{quantities.potentialEnergy.toFixed(3)}</span>
       </div>
       <div className="energy-row energy-total">
-        <span className="energy-label">Total E</span>
+        <span className="energy-label" data-tip="Total Energy — KE + PE (conserved in closed systems)">Total E</span>
         <span className="energy-value">{quantities.totalEnergy.toFixed(3)}</span>
       </div>
       <div className="energy-row">
-        <span className="energy-label">|p|</span>
+        <span className="energy-label" data-tip="Total momentum magnitude (conserved quantity)">|p|</span>
         <span className="energy-value">{quantities.totalMomentum.length().toFixed(4)}</span>
       </div>
       <div className="energy-row">

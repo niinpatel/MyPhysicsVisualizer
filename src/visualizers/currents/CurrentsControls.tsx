@@ -4,12 +4,10 @@ import { useSimulationStore } from '../../store/useSimulationStore';
 import { useUIStore } from '../../store/useUIStore';
 import { PresetSelector, usePresetLoader } from '../../components/ui/PresetSelector';
 import { ParameterSlider } from '../../components/ui/ParameterSlider';
-import { setMu0, getMu0, setWireLength, getWireLength, setWireDirection } from './currentForce';
+import { setMu0, getMu0, setWireLength, getWireLength, setWireDirection, clearWireDirections, CURRENTS_SOFTENING } from './currentForce';
 import { currentForce } from './currentForce';
 import { biotSavartForce } from './biotSavartForce';
 import { currentsPresets, presetWireDirections } from './currentsPresets';
-
-const SOFTENING = 0.2;
 
 function formatVec(v: THREE.Vector3): string {
   return `(${v.x.toFixed(2)}, ${v.y.toFixed(2)}, ${v.z.toFixed(2)})`;
@@ -35,11 +33,13 @@ export function CurrentsControls() {
 
   // Recompute forces for readout
   const recomputeForces = useCallback(() => {
-    const bodies = useSimulationStore.getState().bodies;
-    if (bodies.length >= 2) {
-      setAmpereF(currentForce(bodies, SOFTENING));
-      setBsF(biotSavartForce(bodies, SOFTENING));
-    }
+    requestAnimationFrame(() => {
+      const bodies = useSimulationStore.getState().bodies;
+      if (bodies.length >= 2) {
+        setAmpereF(currentForce(bodies, CURRENTS_SOFTENING));
+        setBsF(biotSavartForce(bodies, CURRENTS_SOFTENING));
+      }
+    });
   }, []);
 
   // Load first preset on mount
@@ -72,7 +72,7 @@ export function CurrentsControls() {
       const sep = bodies[0].position.distanceTo(bodies[1].position);
       setSeparation(Math.round(sep * 10) / 10);
     }
-    // Apply preset wire directions
+    clearWireDirections();
     const dirs = presetWireDirections[activePresetId];
     if (dirs) {
       setWireDirection('wire-1', dirs[0]);
@@ -81,7 +81,7 @@ export function CurrentsControls() {
       setWire2Angle(Math.round(angle));
     }
     // Recompute forces after preset loads
-    setTimeout(recomputeForces, 50);
+    recomputeForces();
   }, [activePresetId]);
 
   const applyParams = () => {
@@ -113,7 +113,7 @@ export function CurrentsControls() {
     store.setBodies(activeBodies);
     useSimulationStore.setState({ time: 0, isPlaying: false });
     // Recompute forces after applying
-    setTimeout(recomputeForces, 50);
+    recomputeForces();
   };
 
   const isParallel = wire2Angle === 0;

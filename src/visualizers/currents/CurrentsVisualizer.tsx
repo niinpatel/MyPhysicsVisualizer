@@ -3,26 +3,25 @@ import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { ForceArrow } from '../../components/three/ForceArrow';
 import { useSimulationLoop } from '../../hooks/useSimulationLoop';
-import { currentForce } from './currentForce';
+import { currentForce, CURRENTS_SOFTENING } from './currentForce';
 import { biotSavartForce } from './biotSavartForce';
 import { useSimulationStore } from '../../store/useSimulationStore';
 import { useUIStore } from '../../store/useUIStore';
 import { Wire3D } from './Wire3D';
 
-const SOFTENING = 0.2;
-
 export function CurrentsVisualizer() {
   const ampereForcesRef = useRef<THREE.Vector3[]>([new THREE.Vector3(), new THREE.Vector3()]);
   const bsForcesRef = useRef<THREE.Vector3[]>([new THREE.Vector3(), new THREE.Vector3()]);
 
-  useSimulationLoop(currentForce, SOFTENING);
+  useSimulationLoop(currentForce, CURRENTS_SOFTENING);
 
   useFrame(() => {
+    const { showForceArrows, showAmpereArrows, showBiotSavartArrows } = useUIStore.getState();
+    if (!showForceArrows) return;
     const bodies = useSimulationStore.getState().bodies;
-    if (bodies.length >= 2) {
-      ampereForcesRef.current = currentForce(bodies, SOFTENING);
-      bsForcesRef.current = biotSavartForce(bodies, SOFTENING);
-    }
+    if (bodies.length < 2) return;
+    if (showAmpereArrows) ampereForcesRef.current = currentForce(bodies, CURRENTS_SOFTENING);
+    if (showBiotSavartArrows) bsForcesRef.current = biotSavartForce(bodies, CURRENTS_SOFTENING);
   });
 
   const showForceArrows = useUIStore((s) => s.showForceArrows);

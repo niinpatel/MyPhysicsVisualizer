@@ -18,7 +18,6 @@ interface Wire3DProps {
 export function Wire3D({ bodyId }: Wire3DProps) {
   const wireRef = useRef<THREE.Mesh>(null);
   const carrierRefs = useRef<(THREE.Mesh | null)[]>([]);
-  // Track carrier offsets in a ref to avoid re-renders
   const carrierOffsets = useRef<number[]>(
     Array.from({ length: CARRIER_COUNT }, (_, i) => (i / CARRIER_COUNT) - 0.5)
   );
@@ -64,13 +63,11 @@ export function Wire3D({ bodyId }: Wire3DProps) {
 
   return (
     <>
-      {/* Wire cylinder — oriented along Y axis (default cylinder orientation) */}
-      <mesh ref={wireRef} rotation={[0, 0, 0]}>
+      <mesh ref={wireRef}>
         <cylinderGeometry args={[0.08, 0.08, 1, 16]} />
         <meshStandardMaterial color="#888888" metalness={0.7} roughness={0.3} />
       </mesh>
 
-      {/* Charge carrier dots */}
       {Array.from({ length: CARRIER_COUNT }, (_, i) => (
         <mesh
           key={i}

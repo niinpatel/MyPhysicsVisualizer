@@ -1,11 +1,7 @@
 import * as THREE from 'three';
 import type { ForceFunction } from '../../types/simulation';
-import { getMu0, getWireLength, getWireDirection } from './currentForce';
+import { getMu0, getWireLength, getWireDirection, N_SEGMENTS } from './currentForce';
 
-// Same segment count as Ampère for consistent comparison
-const N_SEGMENTS = 20;
-
-// Pre-allocated temp vectors (separate from currentForce.ts to avoid conflicts)
 const _r = new THREE.Vector3();
 const _rHat = new THREE.Vector3();
 const _segPosI = new THREE.Vector3();
@@ -26,8 +22,11 @@ const _segPosJ = new THREE.Vector3();
  * For parallel wires this gives the same result as Ampère's formula.
  * For perpendicular wires the force directions diverge.
  */
+const _forces: THREE.Vector3[] = [];
+
 export const biotSavartForce: ForceFunction = (bodies, softening) => {
-  const forces = bodies.map(() => new THREE.Vector3());
+  while (_forces.length < bodies.length) _forces.push(new THREE.Vector3());
+  for (let i = 0; i < bodies.length; i++) _forces[i].set(0, 0, 0);
   const mu0 = getMu0();
   const wireLength = getWireLength();
   const segLen = wireLength / N_SEGMENTS;
@@ -85,14 +84,14 @@ export const biotSavartForce: ForceFunction = (bodies, softening) => {
         }
       }
 
-      forces[j].x += fjx;
-      forces[j].y += fjy;
-      forces[j].z += fjz;
-      forces[i].x += fix;
-      forces[i].y += fiy;
-      forces[i].z += fiz;
+      _forces[j].x += fjx;
+      _forces[j].y += fjy;
+      _forces[j].z += fjz;
+      _forces[i].x += fix;
+      _forces[i].y += fiy;
+      _forces[i].z += fiz;
     }
   }
 
-  return forces;
+  return _forces;
 };

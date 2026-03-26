@@ -32,14 +32,19 @@ export function setWireDirection(bodyId: string, dir: THREE.Vector3) {
   wireDirections.set(bodyId, dir.clone().normalize());
 }
 
+export function clearWireDirections() {
+  wireDirections.clear();
+}
+
 export function getWireDirection(bodyId: string): THREE.Vector3 {
   return wireDirections.get(bodyId) ?? _defaultDir;
 }
 
-// Number of discrete segments for Ampère element summation
-const N_SEGMENTS = 20;
+export const CURRENTS_SOFTENING = 0.2;
 
-// Pre-allocated temp vectors
+// Number of discrete segments for Ampère element summation
+export const N_SEGMENTS = 20;
+
 const _r = new THREE.Vector3();
 const _rHat = new THREE.Vector3();
 const _segPosI = new THREE.Vector3();
@@ -58,8 +63,11 @@ const _segPosJ = new THREE.Vector3();
  * For parallel wires this reduces to F/L = μ₀I₁I₂/(2πd).
  * For perpendicular wires the predictions diverge from Maxwell/Biot-Savart.
  */
+const _forces: THREE.Vector3[] = [];
+
 export const currentForce: ForceFunction = (bodies, softening) => {
-  const forces = bodies.map(() => new THREE.Vector3());
+  while (_forces.length < bodies.length) _forces.push(new THREE.Vector3());
+  for (let i = 0; i < bodies.length; i++) _forces[i].set(0, 0, 0);
   const segLen = wireLength / N_SEGMENTS;
 
   for (let i = 0; i < bodies.length; i++) {
@@ -100,17 +108,16 @@ export const currentForce: ForceFunction = (bodies, softening) => {
         }
       }
 
-      // Force on wire j from wire i (central, so Newton's 3rd law holds)
-      forces[j].x += fx;
-      forces[j].y += fy;
-      forces[j].z += fz;
-      forces[i].x -= fx;
-      forces[i].y -= fy;
-      forces[i].z -= fz;
+      _forces[j].x += fx;
+      _forces[j].y += fy;
+      _forces[j].z += fz;
+      _forces[i].x -= fx;
+      _forces[i].y -= fy;
+      _forces[i].z -= fz;
     }
   }
 
-  return forces;
+  return _forces;
 };
 
 /**

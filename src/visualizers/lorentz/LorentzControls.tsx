@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { useSimulationStore } from '../../store/useSimulationStore';
 import { PresetSelector, usePresetLoader } from '../../components/ui/PresetSelector';
 import { ParameterSlider } from '../../components/ui/ParameterSlider';
-import { setMagneticConstant, getMagneticConstant } from '../../engine/forces/lorentz';
+import { setPermeability, getPermeability } from '../../engine/forces/lorentz';
 import { lorentzPresets } from './lorentzPresets';
 
 function chargeColor(q: number): string {
@@ -14,7 +14,7 @@ export function LorentzControls() {
   const { activePresetId, loadPreset } = usePresetLoader(lorentzPresets, lorentzPresets[0].id);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [timeScale, setTimeScale] = useState(1);
-  const [magneticStrength, setMagneticStrength] = useState(getMagneticConstant());
+  const [magneticPermeability, setMagneticPermeability] = useState(getPermeability());
 
   // Advanced params
   const [charge1, setCharge1] = useState(8);
@@ -33,10 +33,10 @@ export function LorentzControls() {
     useSimulationStore.getState().setTimeScale(timeScale);
   }, [timeScale]);
 
-  // Magnetic constant
+  // Sync permeability to engine
   useEffect(() => {
-    setMagneticConstant(magneticStrength);
-  }, [magneticStrength]);
+    setPermeability(magneticPermeability);
+  }, [magneticPermeability]);
 
   const applyCustom = () => {
     const attractive = charge1 * charge2 < 0;
@@ -98,9 +98,9 @@ export function LorentzControls() {
         />
         <ParameterSlider
           label="Magnetic Strength"
-          value={magneticStrength}
+          value={magneticPermeability}
           min={0} max={2} step={0.01}
-          onChange={setMagneticStrength}
+          onChange={setMagneticPermeability}
         />
       </div>
 

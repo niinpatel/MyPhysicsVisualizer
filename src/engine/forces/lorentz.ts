@@ -2,14 +2,17 @@ import * as THREE from 'three';
 import type { Body, ForceFunction } from '../../types/simulation';
 
 const K_E = 1.0; // Electric (Coulomb) constant
-let K_M = 0.5; // Magnetic constant (tuned for visibility, not physical μ₀/4π)
 
-export function setMagneticConstant(value: number) {
-  K_M = value;
+// Permeability factor for magnetic forces — analogous to μ₀/(4π),
+// but tuned so magnetic effects are visible at simulation scales and speeds.
+let permeability = 0.5;
+
+export function setPermeability(value: number) {
+  permeability = value;
 }
 
-export function getMagneticConstant(): number {
-  return K_M;
+export function getPermeability(): number {
+  return permeability;
 }
 
 // Pre-allocated temp vectors to avoid GC pressure in the hot loop
@@ -52,9 +55,9 @@ export const lorentzForce: ForceFunction = (bodies, softening) => {
       // momentum is carried by the EM fields.
 
       // B field at i due to j's motion:
-      // B_j = (K_M * qj / (r * r2)) * cross(vj, -r_ij)
-      //     = -(K_M * qj / (r * r2)) * cross(vj, r_ij)
-      const bjCoeff = -K_M * bodies[j].charge / (r * r2);
+      // B_j = (permeability * qj / (r * r2)) * cross(vj, -r_ij)
+      //     = -(permeability * qj / (r * r2)) * cross(vj, r_ij)
+      const bjCoeff = -permeability * bodies[j].charge / (r * r2);
       _bField.crossVectors(bodies[j].velocity, _diff).multiplyScalar(bjCoeff);
       // Force on i: F = qi * cross(vi, B)
       _fMag.crossVectors(bodies[i].velocity, _bField).multiplyScalar(bodies[i].charge);
@@ -62,8 +65,8 @@ export const lorentzForce: ForceFunction = (bodies, softening) => {
 
       // B field at j due to i's motion:
       // r_hat from i to j is +_diff/r
-      // B_i = (K_M * qi / (r * r2)) * cross(vi, r_ij)
-      const biCoeff = K_M * bodies[i].charge / (r * r2);
+      // B_i = (permeability * qi / (r * r2)) * cross(vi, r_ij)
+      const biCoeff = permeability * bodies[i].charge / (r * r2);
       _bField.crossVectors(bodies[i].velocity, _diff).multiplyScalar(biCoeff);
       // Force on j: F = qj * cross(vj, B)
       _fMag.crossVectors(bodies[j].velocity, _bField).multiplyScalar(bodies[j].charge);
@@ -77,14 +80,13 @@ export const lorentzForce: ForceFunction = (bodies, softening) => {
 /**
  * Potential energy is electric only — magnetic force has no potential.
  */
-export function lorentzPotentialEnergy(bodies: Body[]): number {
+export function lorentzPotentialEnergy(bodies: Body[], softening = 0.3): number {
   let pe = 0;
   for (let i = 0; i < bodies.length; i++) {
     for (let j = i + 1; j < bodies.length; j++) {
-      const r = bodies[i].position.distanceTo(bodies[j].position);
-      if (r > 0) {
-        pe += (K_E * bodies[i].charge * bodies[j].charge) / r;
-      }
+      const dist2 = bodies[i].position.distanceToSquared(bodies[j].position);
+      const r = Math.sqrt(dist2 + softening * softening);
+      pe += (K_E * bodies[i].charge * bodies[j].charge) / r;
     }
   }
   return pe;

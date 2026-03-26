@@ -41,8 +41,16 @@ export function AppShell() {
     }
   }, [activeId]);
 
+  const sidebarOpen = useUIStore((s) => s.sidebarOpen);
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
+
   return (
     <div className="app-shell">
+      <button className="mobile-menu-btn" onClick={toggleSidebar} aria-label="Toggle menu">
+        <span className={`hamburger ${sidebarOpen ? 'open' : ''}`} />
+      </button>
+      {sidebarOpen && <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />}
       <Sidebar />
       <Viewport />
     </div>

@@ -10,6 +10,7 @@ export function Sidebar() {
   const setShowTrails = useUIStore((s) => s.setShowTrails);
   const showForceArrows = useUIStore((s) => s.showForceArrows);
   const setShowForceArrows = useUIStore((s) => s.setShowForceArrows);
+  const sidebarOpen = useUIStore((s) => s.sidebarOpen);
 
   const config = visualizerRegistry.find((v) => v.id === activeId);
   if (!config) return null;
@@ -17,7 +18,7 @@ export function Sidebar() {
   const ControlsComponent = config.ControlsComponent;
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <h1>Physics Visualizer</h1>
         <p className="sidebar-tagline">Explore fundamental forces in an interactive 3D sandbox</p>

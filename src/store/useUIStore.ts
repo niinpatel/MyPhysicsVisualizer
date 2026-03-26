@@ -13,6 +13,9 @@ interface UIStore {
   setShowBiotSavartArrows: (show: boolean) => void;
   hasInteracted: boolean;
   setHasInteracted: () => void;
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
 }
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -28,4 +31,7 @@ export const useUIStore = create<UIStore>((set) => ({
   setShowBiotSavartArrows: (showBiotSavartArrows) => set({ showBiotSavartArrows }),
   hasInteracted: false,
   setHasInteracted: () => set({ hasInteracted: true }),
+  sidebarOpen: false,
+  setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
+  toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
 }));

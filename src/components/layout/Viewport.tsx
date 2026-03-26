@@ -34,10 +34,11 @@ export function Viewport() {
       </Canvas>
       {!hasInteracted && !isPlaying && (
         <div className="viewport-hint">
-          Pick a preset, then press <kbd>Space</kbd> to play
+          Pick a preset, then press <kbd className="desktop-only">Space</kbd><span className="mobile-only">Play</span> to start
         </div>
       )}
-      <div className="viewport-camera-hint">Drag to orbit · Scroll to zoom</div>
+      <div className="viewport-camera-hint desktop-only">Drag to orbit · Scroll to zoom</div>
+      <div className="viewport-camera-hint mobile-only">Pinch to zoom · Drag to orbit</div>
       <EnergyDisplay potentialEnergyFn={config.computePotentialEnergy} />
     </div>
   );

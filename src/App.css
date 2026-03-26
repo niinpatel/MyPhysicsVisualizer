@@ -168,11 +168,25 @@ html, body, #root {
   padding: 12px 20px;
   border-top: 1px solid #1a1a3a;
   margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .shortcut-hint {
   font-size: 11px;
   color: #555577;
+}
+
+.github-link {
+  color: #8888aa;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.github-link:hover {
+  color: #ffffff;
 }
 
 /* Viewport */

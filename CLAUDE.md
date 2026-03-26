@@ -41,6 +41,7 @@ To add a new visualizer: create a folder under `src/visualizers/`, implement `Vi
 
 ### Important Implementation Details
 
-- Three.js `Vector3` objects are mutated in-place during physics steps for performance — avoid creating new vectors in hot paths.
-- Force functions are pure: `(bodies, softening) => forces[]`. They also compute potential energy via a separate export.
-- TypeScript strict mode is enforced with `noUnusedLocals` and `noUnusedParameters`.
+- Three.js `Vector3` objects are mutated in-place during physics steps for performance — avoid creating new vectors in hot paths. Force functions reuse module-level scratch vectors and result arrays.
+- Force functions are pure: `(bodies, softening) => forces[]`. They also compute potential energy via a separate export. Exception: `currents/currentForce.ts` has module-level mutable state (`mu0`, `wireLength`, `wireDirections`) set via getter/setter functions from the controls component.
+- TypeScript strict mode with `noUnusedLocals`, `noUnusedParameters`, and `erasableSyntaxOnly` (use `import type` for type-only imports, no `enum` keyword).
+- Zustand stores are accessed outside React components via `useSimulationStore.getState()` (e.g., in `useSimulationLoop` inside `useFrame`, and in `AppShell` effects).

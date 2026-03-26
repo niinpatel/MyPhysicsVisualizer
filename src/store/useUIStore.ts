@@ -7,6 +7,10 @@ interface UIStore {
   setShowTrails: (show: boolean) => void;
   showForceArrows: boolean;
   setShowForceArrows: (show: boolean) => void;
+  showAmpereArrows: boolean;
+  setShowAmpereArrows: (show: boolean) => void;
+  showBiotSavartArrows: boolean;
+  setShowBiotSavartArrows: (show: boolean) => void;
 }
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -16,4 +20,8 @@ export const useUIStore = create<UIStore>((set) => ({
   setShowTrails: (showTrails) => set({ showTrails }),
   showForceArrows: true,
   setShowForceArrows: (showForceArrows) => set({ showForceArrows }),
+  showAmpereArrows: true,
+  setShowAmpereArrows: (showAmpereArrows) => set({ showAmpereArrows }),
+  showBiotSavartArrows: true,
+  setShowBiotSavartArrows: (showBiotSavartArrows) => set({ showBiotSavartArrows }),
 }));

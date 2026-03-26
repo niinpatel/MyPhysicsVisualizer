@@ -14,6 +14,11 @@ import { LorentzVisualizer } from './lorentz/LorentzVisualizer';
 import { LorentzControls } from './lorentz/LorentzControls';
 import { lorentzDefaultBodies } from './lorentz/lorentzDefaults';
 import { lorentzPresets } from './lorentz/lorentzPresets';
+import { currentForce, currentPotentialEnergy } from './currents/currentForce';
+import { CurrentsVisualizer } from './currents/CurrentsVisualizer';
+import { CurrentsControls } from './currents/CurrentsControls';
+import { currentsDefaultBodies } from './currents/currentsDefaults';
+import { currentsPresets } from './currents/currentsPresets';
 
 export const visualizerRegistry: VisualizerConfig[] = [
   {
@@ -51,5 +56,17 @@ export const visualizerRegistry: VisualizerConfig[] = [
     ControlsComponent: LorentzControls,
     computePotentialEnergy: lorentzPotentialEnergy,
     softening: 0.3,
+  },
+  {
+    id: 'currents',
+    name: 'Currents in Conductors',
+    description: 'Force between parallel current-carrying wires (F/L = μ₀I₁I₂/2πd)',
+    forceFunction: currentForce,
+    defaultBodies: currentsDefaultBodies,
+    presets: currentsPresets,
+    SceneComponent: CurrentsVisualizer,
+    ControlsComponent: CurrentsControls,
+    computePotentialEnergy: currentPotentialEnergy,
+    softening: 0.2,
   },
 ];
